@@ -1,4 +1,4 @@
-import { Component, Connection, Gear, Rod } from "./types";
+import { Component, Connection, Gear, Rod } from "./types.ts";
 
 type PropogateConnection = {
     leftName: string;
