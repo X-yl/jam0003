@@ -1,6 +1,6 @@
 import * as asserts from "https://deno.land/std/testing/asserts.ts";
 import { Gear, Rod } from "./src/types.ts";
-import { simulate } from "./src/index.ts";
+import { simulate } from "./src/simulate.ts";
 
 Deno.test("test OR gate", () => {
     const output_rod: Rod = {
