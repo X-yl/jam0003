@@ -138,31 +138,39 @@ Deno.test("test analog subtracter", () => {
         state: 0,
     };
 
+    const sumGear: Gear = {
+        name: "summer gear",
+        kind: "gear",
+        teeth: 20,
+        connectedRight: [{
+            kind: "gear-gear",
+            component: outputGear,
+        }],
+        state: 0,
+    };
 
     const gear1: Gear = {
         name: "gear1",
         kind: "gear",
         teeth: 10,
-        connectedRight: [{ kind: "gear-gear", component: outputGear}],
+        connectedRight: [{ kind: "gear-gear", component: sumGear }],
         state: 0,
     };
-
-    const reverserGear: Gear = {
-        name: "reverser gear",
-        kind: "gear",
-        teeth: 10,
-        connectedRight: [{ kind: "gear-gear", component: outputGear }],
-        state: 0,
-    }
 
     const gear2: Gear = {
         name: "gear2",
         kind: "gear",
         teeth: 10,
-        connectedRight: [{ kind: "gear-gear", component: reverserGear }],
+        connectedRight: [{ kind: "gear-gear", component: outputGear }],
         state: 0,
     };
 
-    simulate([gear1, gear2], [10, 5]);
-    asserts.assertEquals(outputGear.state, 5);
+    // calc gear1 - gear2
+    // Note that gear1 rotates clockwise, thus rotating sumGear counterclockwise.
+    // sumGear then rotates outputGear clockwise, thus increasing the total sum.
+    // gear2 rotates clockwise as well, which turns the sumGear counterclockwise,
+    // thereby decreasing the total sum.
+    
+    simulate([gear1, gear2], [9, 6]);
+    asserts.assertEquals(outputGear.state, 3);
 });
