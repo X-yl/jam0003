@@ -170,7 +170,7 @@ Deno.test("test analog subtracter", () => {
     // sumGear then rotates outputGear clockwise, thus increasing the total sum.
     // gear2 rotates clockwise as well, which turns the sumGear counterclockwise,
     // thereby decreasing the total sum.
-    
+
     simulate([gear1, gear2], [9, 6]);
     asserts.assertEquals(outputGear.state, 3);
 });

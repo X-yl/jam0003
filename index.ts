@@ -1,6 +1,7 @@
 import { Component, Connection, Gear, Rod } from "./types.ts";
 
 type PropogateConnection = {
+    leftName: string;
     connection: Connection;
     state: number | "push" | "pull";
     teeth?: number;
@@ -23,12 +24,14 @@ export function simulate(inputComponents: Component[], inputs: ("push" | "pull" 
             const key = connection.component;
             if (stack.has(key)) {
                 stack.get(key)!.push({
+                    leftName: component.name,
                     connection: connection,
                     state: input,
                     teeth: component.kind == "gear" ? component.teeth : undefined,
                 });
             } else {
                 stack.set(key, [{
+                    leftName: component.name,
                     connection: connection,
                     state: input,
                     teeth: component.kind == "gear" ? component.teeth : undefined,
@@ -48,10 +51,13 @@ export function simulate(inputComponents: Component[], inputs: ("push" | "pull" 
         for (const prop of props) {
             if (prop.connection.kind == "rod-rod") {
                 if (prop.connection.rodAttachment == "attach") {
+                    console.log(`${prop.leftName} makes ${prop.connection.component.name}: ${prop.state}`);
                     component.state = prop.state;
                 } else if (prop.connection.rodAttachment == "push" && prop.state == "push") {
+                    console.log(`${prop.leftName} pushes ${prop.connection.component.name}: ${prop.state}`);
                     component.state = "push";
                 } else if (prop.connection.rodAttachment == "pull" && prop.state == "pull") {
+                    console.log(`${prop.leftName} pulls ${prop.connection.component.name}: ${prop.state}`);
                     component.state = "pull";
                 }
                 verifyConsistency(forcedState, component.state);
@@ -71,6 +77,8 @@ export function simulate(inputComponents: Component[], inputs: ("push" | "pull" 
                         component.state = "pull";
                     } else if (rodPosition == prop.teeth! / 2) {
                         component.state = "push";
+                    } else {
+                        throw new Error(`Rod not fully pulled or pushed! Expected 0 or ${prop.teeth! / 2}, got ${rodPosition}`);
                     }
                 }
                 verifyConsistency(forcedState, component.state);
@@ -94,12 +102,14 @@ export function simulate(inputComponents: Component[], inputs: ("push" | "pull" 
             const key = connection.component;
             if (stack.has(key)) {
                 stack.get(key)!.push({
+                    leftName: component.name,
                     connection: connection,
                     state: component.state,
                     teeth: component.kind == "gear" ? component.teeth : undefined,
                 });
             } else {
                 stack.set(key, [{
+                    leftName: component.name,
                     connection: connection,
                     state: component.state,
                     teeth: component.kind == "gear" ? component.teeth : undefined,
