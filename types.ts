@@ -12,7 +12,6 @@ export type GearRodConnection = {
     kind: "gear-rod";
     component: Component;
     gearOffset: number;
-    teeth: number;
 }
 
 export type GearGearConnection = {
