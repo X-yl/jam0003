@@ -1,4 +1,4 @@
-import * as asserts from "https://deno.land/std/testing/asserts.ts";
+import * as asserts from "https://deno.land/std@0.149.0/testing/asserts.ts";
 import { Gear, Rod } from "./src/types.ts";
 import { simulate } from "./src/simulate.ts";
 
