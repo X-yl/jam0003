@@ -51,13 +51,10 @@ export function simulate(inputComponents: Component[], inputs: ("push" | "pull" 
         for (const prop of props) {
             if (prop.connection.kind == "rod-rod") {
                 if (prop.connection.rodAttachment == "attach") {
-                    console.log(`${prop.leftName} makes ${prop.connection.component.name}: ${prop.state}`);
                     component.state = prop.state;
                 } else if (prop.connection.rodAttachment == "push" && prop.state == "push") {
-                    console.log(`${prop.leftName} pushes ${prop.connection.component.name}: ${prop.state}`);
                     component.state = "push";
                 } else if (prop.connection.rodAttachment == "pull" && prop.state == "pull") {
-                    console.log(`${prop.leftName} pulls ${prop.connection.component.name}: ${prop.state}`);
                     component.state = "pull";
                 }
                 verifyConsistency(forcedState, component.state);
