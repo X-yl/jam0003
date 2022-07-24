@@ -1,3 +1,3 @@
 // UI Rendering
-import { simulate } from "../simulate.ts";
+import { simulate } from "../simulate";
 

@@ -2,7 +2,20 @@
 
 A language for specifying clockwork. 
 
-## intro
+I've always thought clockwork assemblies were incredibly beautiful. Hundreds, maybe thousands of tiny, perfectly engineered
+springs and gears, all moving in perfect synchronicity.
+
+```        ^--- me explaining why this follows the theme```
+
+## installation
+
+To install the interpreter, you'll need node.js. 
+Clone the repository, run `npm ci` and then `npm start -- --help` should help you out with the 
+available options.
+
+Try `npm start -- example.cc` to try out some of the examples.
+
+## so what's this about
 
 If you haven't heard of the [Analytical Engine](https://en.wikipedia.org/wiki/Analytical_Engine),
 it may surprise you to learn that it's possible to build a full, Turing complete, general purpose computer using just mechanical parts.
@@ -25,14 +38,14 @@ Here's how that's implemented in the language
 component not {  // define a resuable component not
     input x: rod {  // define x, a rod that is an input
         x -> my_gear {
-            attachmentPoint: 0 // attach x to the first tooth of my_gear
+            gearOffset: 0 // attach x to the first tooth of my_gear
         }
     }
 
     my_gear: gear { // define my_gear, a gear with two teeth, i.e a spinning rod.
         teeth: 2
         gear -> y {
-            attachmentPoint: 1 // attach y to the second tooth of the gear
+            gearOffset: 1 // attach y to the second tooth of the gear
         }
     }
 
@@ -40,19 +53,21 @@ component not {  // define a resuable component not
 }
 ```
 
-And here's an OR gate:
+And here's an OR gate. Mechanically, it's just two rods that push a single rod.
+If either of them pushes it, the ouput is true. Although, we also need a spring
+to make the default state to pulled.
 
 ```js
 component or {
     input x: rod {
         x -> joiner {
-            attachmentType: push_only // If x is pushed, it pushes joiner, but if x is pulled, joiner remains where it is
+            rodAttachment: push // If x is pushed, it pushes joiner, but if x is pulled, joiner remains where it is
         }
     }
 
     input y: rod {
         y -> joiner {
-            attachmentType: push_only
+            rodAttachment: push
         }
     }
 
@@ -78,3 +93,49 @@ component nor {
 
 And as we all know, a NOR gate is a [universal gate](https://en.wikipedia.org/wiki/NOR_logic), meaning you can make _any_ logic circuit using just NOR gates.
 
+Anyway. Say we want to do some maths. We _could_ go the boring way and make all the
+regular logic gates, then a half adder, then a full adder, then put a bunch of them
+together to make an eight-bit adder or whatever. 
+
+But that's lame, we've got a whole bunch of gears! If we have a gear with say, 256 gears, we could have each tooth represent a number, so each 1/256th clockwise turn of the gear represents a number between 0 and 256.
+
+And, because of my ~~lazy coding~~ smart thinking, these gears have a ratchet-y mechanism on them. That means two input gears can turn independently, even if they're 
+attached to the same gear.
+
+> We do actually let you (properly) connect multiple gears to each other like
+> ```
+> [input gear 1] --> [gear 2] --> [gear 3]
+>                        \
+>                         \-----> [gear 4]
+>```
+> However, because this is very much a one-way
+> kinda deal, `[gear 3]` couldn't, for example, spin `[gear 1]` or another input gear.
+
+So here's our magnificent analog adder: 
+
+```js
+component analog_eight_bit_adder {
+    input a: gear {
+        teeth: 256
+        a -> main_rod {}
+    }
+
+    input b: gear {
+        teeth: 256
+        b -> main_rod {}
+    }
+
+    main_rod: gear {
+        teeth: 512
+        main_rod -> sum {} // because a & b spin clockwise, main_rod spins anti-clockwise
+                           // As a result we need another `sum` gear so that our final output
+                           // is clockwise as well.
+    }
+
+    output sum: gear {
+        teeth: 512
+    }
+}
+```
+ 
+But whatever, I've waffled on long enough. Go enjoy your life.
