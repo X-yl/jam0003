@@ -5,7 +5,9 @@ A language for specifying clockwork.
 I've always thought clockwork assemblies were incredibly beautiful. Hundreds, maybe thousands of tiny, perfectly engineered
 springs and gears, all moving in perfect synchronicity.
 
-```        ^--- me explaining why this follows the theme```
+```
+                    ^--- me explaining why this follows the theme
+```
 
 ## installation
 
@@ -28,9 +30,15 @@ Here's what a mechanical not gate looks like:
 
 ![A mechanical not gate showing two rods attached to either end of a central spinning rod.](./not-gate.png)
 
-Clearly, if the input rod is pushed to the right, a one, the output rod is pulled to the left, so a zero.
-And, if the rod is pulled to the left, a zero, the output rod is pushed to the right, so a one.
+Clearly, if the input rod is pushed to the right, (so a one by our definition), the output rod is pulled to the left, (so a zero by our definition).
+And, if the rod is pulled to the left, (a zero by our definition), the output rod is pushed to the right, (a one by our definiton).
+
 And what do you know, that's the truth table for a NOT gate!
+
+| X | !X |
+| - | -- |
+| 0 | 1  |
+| 1 |  0 |
 
 Here's how that's implemented in the language
 
@@ -53,7 +61,23 @@ component not {  // define a resuable component not
 }
 ```
 
-And here's an OR gate. Mechanically, it's just two rods that push a single rod.
+Trying that out in the interpreter:
+
+```js
+> not(push)
+Outputs:  [ 'pull' ]
+After execution states were: 
+Map(3) { 'x' => 'push', 'my_gear' => 1, 'y' => 'pull' }
+
+> not(pull)
+Outputs:  [ 'push' ]
+After execution states were: 
+Map(3) { 'x' => 'pull', 'my_gear' => 0, 'y' => 'push' }
+```
+
+Looks pretty good.
+
+Here's an OR gate. Mechanically, it's just two rods that push a single rod.
 If either of them pushes it, the ouput is true. Although, we also need a spring
 to make the default state to pulled.
 
@@ -76,6 +100,20 @@ component or {
     }
 }
 ```
+Let's give that a run:
+
+```js
+> or(push, pull)
+Outputs:  [ 'push' ]
+After execution states were: 
+Map(3) { 'x' => 'push', 'y' => 'pull', 'joiner' => 'push' }
+
+> or(pull, pull)
+Outputs:  [ 'pull' ]
+After execution states were: 
+Map(3) { 'x' => 'pull', 'y' => 'pull', 'joiner' => 'pull' }
+```
+Reasonable.
 
 Now this is very exciting, because if we put those together we've got a NOR gate!
 
@@ -91,7 +129,26 @@ component nor {
 }
 ```
 
-And as we all know, a NOR gate is a [universal gate](https://en.wikipedia.org/wiki/NOR_logic), meaning you can make _any_ logic circuit using just NOR gates.
+And try that out:
+```js
+> nor(pull, pull)
+Outputs:  [ 'push' ]
+After execution states were: 
+Map(4) { 'x' => 'pull', 'y' => 'pull', 'p' => 'pull', 'q' => 'push' }
+
+> nor(pull, push)
+Outputs:  [ 'pull' ]
+After execution states were: 
+Map(4) { 'x' => 'pull', 'y' => 'push', 'p' => 'push', 'q' => 'pull' }
+
+> nor(push, push)
+Outputs:  [ 'pull' ]
+After execution states were: 
+Map(4) { 'x' => 'push', 'y' => 'push', 'p' => 'push', 'q' => 'pull' }
+```
+Perfect!
+
+As we all know, a NOR gate is a [universal gate](https://en.wikipedia.org/wiki/NOR_logic), meaning you can make _any_ logic circuit using just NOR gates.
 
 Anyway. Say we want to do some maths. We _could_ go the boring way and make all the
 regular logic gates, then a half adder, then a full adder, then put a bunch of them
@@ -137,5 +194,16 @@ component analog_eight_bit_adder {
     }
 }
 ```
- 
-But whatever, I've waffled on long enough. Go enjoy your life.
+
+And here we go: 
+
+```js
+> analog_eight_bit_adder(69, 69)
+Outputs:  [ 138 ]
+After execution states were: 
+Map(4) { 'a' => 69, 'b' => 69, 'main_rod' => 374, 'sum' => 138 }
+```
+
+Checks out.
+
+Anyway, that's my languge. I've waffled on long enough. Go enjoy your life.

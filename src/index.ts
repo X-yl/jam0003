@@ -52,7 +52,7 @@ function main() {
         unresolvedComponents.forEach(x => console.log("    - ",x.name));
 
         console.log("\nEnter a component name and inputs to run it in interactive mode. Enter 'exit' to exit.");
-        console.log("Example: my_component(push, 1)")
+        console.log("Example: my_component(push, 1)\n")
 
         const rl = readline.createInterface({
             input: process.stdin,
@@ -86,6 +86,7 @@ function main() {
                 console.log("Outputs: ", resolvedComponent.outputs.map(x => x.state));
                 console.log("After execution states were: ");
                 console.log(states);
+                console.log();
 
                 rl.prompt();
             }
